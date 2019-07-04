@@ -1,0 +1,27 @@
+{
+  "name": "aws-dynamodb-nodejs",
+  "version": "1.0.0",
+  "description": "REST API - Connect & Prform CRUD operations on dynamodb",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon ./server/bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/priyanka1719/aws-dynamodb-nodejs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/priyanka1719/aws-dynamodb-nodejs/issues"
+  },
+  "homepage": "https://github.com/priyanka1719/aws-dynamodb-nodejs#readme",
+  "dependencies": {
+    "aws-sdk": "^2.488.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "nodemon": "^1.19.1",
+    "uuid": "^3.3.2"
+  }
+}

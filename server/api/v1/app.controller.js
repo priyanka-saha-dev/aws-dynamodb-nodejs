@@ -1,7 +1,25 @@
 const dao = require('./app.dao');
 
-const insertRecord = () => {
+const insertRecord = (req, res) => {
 
+  dao.createDynamoDB()
+    .then((response) => response.status)
+    .then((status) => {
+      if(status && status === 200) {
+        return dao.insertRecord(req.body);
+      } else {
+        return res.status(status).send(`Failed to create`);
+      }
+    })
+    .then((response) => res.status(response.status).send(response))
+    .catch((error) => res.status(error.status).send(error));
+
+  // dao.insertRecord(req.body)
+  //   .then((response) => {
+  //     res.status(response.status).send(response);
+  //   }).catch((error) => {
+  //     res.status(error.status).send(error);
+  //   });
 };
 
 const fetchRecords = () => {
@@ -32,16 +50,16 @@ const uploadToS3Dummy = (req, res) => {
 };
 
 const uploadToS3 = (req, res) => {
-  
+
   console.log('req : ', req.body);
-    dao.uploadToS3(req.body)
-      .then((response) => {
-        res.status(response.status).send(response);
-      }).catch((error) => {
-        res.status(error.status).send(error);
-      });
-  
-  };
+  dao.uploadToS3(req.body)
+    .then((response) => {
+      res.status(response.status).send(response);
+    }).catch((error) => {
+      res.status(error.status).send(error);
+    });
+
+};
 
 module.exports = {
   updateFlag,

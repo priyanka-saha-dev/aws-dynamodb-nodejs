@@ -22,13 +22,9 @@ const dynamoDBParams = {
   }
 };
 
-// [default]
-// aws_access_key_id=AKIA6RR6JYR7A52GNOFW
-// aws_secret_access_key=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
+
 
 const AWSConfig = {
-  "accessKeyId": "AKIA6RR6JYR7A52GNOFW",
-  "secretAccessKey": "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",
   "region": "ap-south-1"
   //"endpoint": "http://localhost:3000"
 };

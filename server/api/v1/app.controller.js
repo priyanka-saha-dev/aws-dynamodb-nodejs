@@ -3,16 +3,31 @@ const dao = require('./app.dao');
 const insertRecord = (req, res) => {
 
   dao.createDynamoDB()
-    .then((response) => response.status)
-    .then((status) => {
-      if(status && status === 200) {
-        return dao.insertRecord(req.body);
-      } else {
-        return res.status(status).send(`Failed to create`);
-      }
+    .then((response) => {
+      console.log('response in create db - ', response);
+      return dao.insertRecord(req.body);
     })
-    .then((response) => res.status(response.status).send(response))
-    .catch((error) => res.status(error.status).send(error));
+    .then((response) => {
+      console.log('response in insert db - ', response);
+      res.status(200).send(response);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).send(error.message);
+    });
+
+  // dao.createDynamoDB()
+  //   .then((response) => {
+  //     const status = response.status;
+  //     console.log('status = ', status);
+  //     if(status && status === 200) {
+  //       return dao.insertRecord(req.body);
+  //     } else {
+  //       return res.status(status).send(`Failed to create`);
+  //     }
+  //   })
+  //   .then((response) => res.status(response.status).send(response))
+  //   .catch((error) => res.status(error.status).send(error));
 
   // dao.insertRecord(req.body)
   //   .then((response) => {

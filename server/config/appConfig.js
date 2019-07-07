@@ -8,23 +8,29 @@ const dbConfig = {
 
 const dynamoDBParams = {
   TableName: "DBParams",
+  AttributeDefinitions: [
+    { AttributeName: "name", AttributeType: "S" },
+    { AttributeName: "title", AttributeType: "S" }
+  ],
   KeySchema: [
     { AttributeName: "name", KeyType: "HASH" },
     { AttributeName: "title", KeyType: "RANGE" }
   ],
-  AttributeDefinitions: [
-    { AttributeName: "name", AttributeType: "S" },
-    { AttributeName: "name", AttributeType: "S" }
-  ],
   ProvisionedThroughput: {
-    ReadCapacityUnits: 10,
-    WriteCapacityUnits: 10
+    ReadCapacityUnits: 5,
+    WriteCapacityUnits: 5
   }
 };
 
+// [default]
+// aws_access_key_id=AKIA6RR6JYR7A52GNOFW
+// aws_secret_access_key=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
+
 const AWSConfig = {
-  region: "ap-south-1",
-  endpoint: "http://localhost:3000"
+  "accessKeyId": "AKIA6RR6JYR7A52GNOFW",
+  "secretAccessKey": "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",
+  "region": "ap-south-1"
+  //"endpoint": "http://localhost:3000"
 };
 
 module.exports = {

@@ -3,6 +3,9 @@ const AWS = require('aws-sdk');
 const { dynamoDBParams } = require('../../config');
 const { AWSConfig } = require('../../config');
 
+AWS.config.update(AWSConfig);
+const db = new AWS.DynamoDB();
+
 const uploadToS3 = (data) => {
 
   const s3 = new AWS.S3();
@@ -48,40 +51,57 @@ const uploadToS3 = (data) => {
 
 const insertRecord = (record) => {
 
-  AWS.config.update(AWSConfig);
-  
-  //const db = new AWS.DynamoDB();
-  const dbClient = new AWS.DynamoDB.DocumentClient();
+  let params = {
+    TableName: dynamoDBParams.TableName,
+    Item: {
+      name : {S: record.name},
+      title : {S: record.title}
+    }
+  };
 
-  return new Promise((resolve, reject) => {
+  console.log('inserting : ', params);
+  return db.putItem(params, (error, response) => {
+    if (error) {
+      console.log('Failed to insert records - ', error);
+      return Promise.reject({
+        "message": `Data not inserted - ${error.message} `,
+        "status": 200
+      })
+    } else {
+      console.log('inserted successfully - ', response);
+      return Promise.resolve({
+        "message": `Data inserted successfully`,
+        "status": 200
+      })
+    }
+  }).promise();
 
-    let params = {
-      TableName: dynamoDBParams.TableName,
-      Item: record
-    };
+  // return new Promise((resolve, reject) => {
 
-    // createDynamoDB().then((response) => {
+  //   let params = {
+  //     TableName: dynamoDBParams.TableName,
+  //     Item: record
+  //   };
 
-    // }).catch((error) => {
+  //   console.log('inserting : ', params);
 
-    // });
+  //   dbClient.put(params, (error, response) => {
+  //     if (error) {
+  //       console.log('Failed to insert records - ', error);
+  //       return reject({
+  //         "message": `Data not inserted - ${error.message} `,
+  //         "status": 200
+  //       })
+  //     } else {
+  //       console.log('inserted successfully - ', response);
+  //       return resolve({
+  //         "message": `Data inserted successfully`,
+  //         "status": 200
+  //       })
+  //     }
+  //   });
 
-    dbClient.put(params, (error, response) => {
-      if (error) {
-        console.log('Failed to insert records - ', error);
-        return reject({
-          "message": `Data not inserted - ${error.message} `,
-          "status": 200
-        })
-      } else {
-        return resolve({
-          "message": `Data inserted successfully`,
-          "status": 200
-        })
-      }
-    });
-
-  });
+  // });
 
 };
 
@@ -99,26 +119,38 @@ const deleteRecord = () => {
 
 const createDynamoDB = () => {
 
-  AWS.config.update(AWSConfig);
-  
-  const db = new AWS.DynamoDB();
-  return new Promise((resolve, reject) => {
-    db.createTable(dynamoDBParams, (error, response) => {
-      if (error) {
-        console.log('Error in table create - ', error);
-        return reject({
-          "message": `Table not created - ${error.message} `,
-          "status": 200
-        })
-      } else {
-        return resolve({
-          "message": `Table created successfully`,
-          "status": 200
-        })
+
+  return db.listTables({}).promise()
+    .then((data) => {
+      console.log('listtables - ', data);
+
+      const exists = data.TableNames
+        .filter(name => {
+          return name === dynamoDBParams.TableName;
+        }).length > 0;
+
+      console.log('exists - ', exists);
+
+      if (exists) {
+        // return Promise.resolve({
+        //   "message": "table already exists",
+        //   "status": "200"
+        // });
+        return db.listTables({}).promise();
       }
-    });
-  });
-}
+      else {
+        return db.createTable(dynamoDBParams).promise();
+      }
+    }).catch((error) => {
+
+      console.log("list table error - ", error);
+      return Promise.reject({
+        "message": "list table error",
+        "status": "200"
+      });
+    })
+
+};
 
 
 module.exports = {

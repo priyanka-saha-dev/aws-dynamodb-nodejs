@@ -4,6 +4,13 @@ const cors = require('cors');
 
 const setDbConnection = () => {
   console.log('DB connection will be setup');
+
+  // db.listTables({}).promise()
+  //   .then(data => data.TableNames.filter((name) => name === dynamoDBParams.TableName).length > 0)
+  //   .then(exists => db.createTable(dynamoDBParams).promise())
+  //   .then(response => console.log('response is - ', response))
+  //   .catch((error) => console.log("list table error - ", error));
+
 };
 
 const setMiddleware = (app) => {
